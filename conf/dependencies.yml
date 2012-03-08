@@ -1,0 +1,4 @@
+self: play -> play-cache-manager 0.1
+
+require:
+    - play

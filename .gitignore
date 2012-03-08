@@ -1,0 +1,23 @@
+# Ignore all dotfiles...
+.*
+# except for .gitignore
+!.gitignore
+
+db/
+tmp/
+eclipse/
+nbproject/
+build/
+lib/
+dist/
+logs/
+workspace/
+precompiled/
+test-result/
+src/modules/
+press/
+*.pyc
+*.swp
+*.log
+*.py
+*.pyc
