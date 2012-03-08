@@ -14,8 +14,7 @@ logs/
 workspace/
 precompiled/
 test-result/
-src/modules/
-press/
+test-app/modules/
 *.pyc
 *.swp
 *.log
