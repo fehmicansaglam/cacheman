@@ -2,7 +2,7 @@
 
 require:
     - play
-    - play -> cache-manager 0.1
+    - play -> cacheman 0.1
 
 repositories:
     - playModules:

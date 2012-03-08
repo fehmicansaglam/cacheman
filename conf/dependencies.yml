@@ -1,4 +1,4 @@
-self: play -> cache-manager 0.1
+self: play -> cacheman 0.1
 
 require:
     - play
