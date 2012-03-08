@@ -26,10 +26,8 @@ Below is a sample enum for global scope cache keys. Two enums, SessionCacheKey a
 bc. package cache;
 public enum GlobalCacheKey implements CacheKey 
 {
-
     USER(new CacheAdapter(new Function<String, User>() 
 	    {
-
 	        @Override
 	        public User apply(String username) {
 
@@ -38,33 +36,24 @@ public enum GlobalCacheKey implements CacheKey
 	    }, 
 	    "8h")),
 	USER_COUNT(new CacheAdapter(User.class, "count", "5mn"));
-
     private CacheAdapter adapter;
-
     private GlobalCacheKey(CacheAdapter adapter) 
     {
-
         this.adapter = adapter;
     }
-
     @Override
     public CacheScope scope() 
     {
-
         return CacheScope.GLOBAL;
     }
-
     @Override
     public String key() 
     {
-
         return this.name();
     }
-
     @Override
     public CacheAdapter adapter() 
     {
-
         return adapter;
     }
 }
