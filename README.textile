@@ -16,16 +16,13 @@ bc. - play -> cacheman <required version>
 
 h2. Sample application
 
-A sample application is included in the test-app folder.
+A sample application is included in the *test-app* folder.
 
 h2. Usage
 
-Create enums for the session and global scope cache keys. A sample enum named SampleCacheKey is included in the module.
-Below is a sample enum for global scope cache keys. Two enums, SessionCacheKey and GlobalCacheKey is sufficient for a common application.
-A CacheAdapter is used for defining the generation of the values for the cache keys. You can pass a function or a static method of the 
-GenericModel to the CacheAdapter. Then you can use CacheManager.get(GlobalCacheKey.USER_COUNT) or CacheManager.get(GlobalCacheKey.USER, username) 
-to get the value. If the value is present in the cache then CacheManager.get immediately returns the value. If the value is not present in the cache then 
-the value is generated and stored in the cache, then the generated value is returned. 
+Create enums for the session and global scope cache keys. A sample enum named *SampleCacheKey* is included in the module. Below is a sample enum for global scope cache keys. Two enums, *SessionCacheKey* and *GlobalCacheKey* is sufficient for a common application. 
+
+A *CacheAdapter* is used for defining the generation of the values for the cache keys. You can pass a function or a static method of the GenericModel to the CacheAdapter. Then you can use *CacheManager.get(GlobalCacheKey.USER_COUNT)* or *CacheManager.get(GlobalCacheKey.USER, username)* to get the value. If the value is present in the cache then CacheManager.get immediately returns the value. If the value is not present in the cache then the value is generated and stored in the cache, then the generated value is returned. 
 
 bc. package cache;
 import models.User;
