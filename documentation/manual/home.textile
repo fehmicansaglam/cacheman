@@ -29,8 +29,8 @@ public enum GlobalCacheKey implements CacheKey
     USER(new CacheAdapter(new Function<String, User>() 
 	    {
 	        @Override
-	        public User apply(String username) {
-
+	        public User apply(String username) 
+	        {
 	            return User.findByUsername(username);
 	        }
 	    }, 
