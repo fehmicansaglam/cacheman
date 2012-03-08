@@ -9,19 +9,56 @@ To install Cacheman, you can use the modules repository:
 
 bc. play install cacheman-<required version>
 
-If you are using Play! 1.2 or above, you can add it your dependencies.
+If you are using Play! 1.2 or above, you can add it to your dependencies.
 
 bc. - play -> cacheman <required version>
 
 
 h2. Sample application
 
-p(note). A sample application is included in the test-app folder.
+A sample application is included in the test-app folder.
 
 h2. Usage
 
-p(note). Create an enum for cache keys. A sample enum named SampleCacheKey is included in the module.
+Create enums for the session and global scope cache keys. A sample enum named SampleCacheKey is included in the module.
+Below is a sample enum for global scope cache keys. Two enums, SessionCacheKey and GlobalCacheKey is sufficient for a common application.
 
+bc.
+public enum GlobalCacheKey implements CacheKey {
 
+    USER(new CacheAdapter(new Function<String, User>() {
+
+        @Override
+        public User apply(String username) {
+
+            return User.findByUsername(username);
+        }
+    }, "8h")), USER_COUNT(new CacheAdapter(User.class, "count", "5mn"));
+
+    private CacheAdapter adapter;
+
+    private GlobalCacheKey(CacheAdapter adapter) {
+
+        this.adapter = adapter;
+    }
+
+    @Override
+    public CacheScope scope() {
+
+        return CacheScope.GLOBAL;
+    }
+
+    @Override
+    public String key() {
+
+        return this.name();
+    }
+
+    @Override
+    public CacheAdapter adapter() {
+
+        return adapter;
+    }
+}
 
 
