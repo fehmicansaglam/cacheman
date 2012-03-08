@@ -23,7 +23,7 @@ h2. Usage
 Create enums for the session and global scope cache keys. A sample enum named SampleCacheKey is included in the module.
 Below is a sample enum for global scope cache keys. Two enums, SessionCacheKey and GlobalCacheKey is sufficient for a common application.
 
-bc.
+bc. package cache;
 public enum GlobalCacheKey implements CacheKey {
 
     USER(new CacheAdapter(new Function<String, User>() {
