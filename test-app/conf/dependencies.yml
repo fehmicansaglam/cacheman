@@ -2,3 +2,22 @@
 
 require:
     - play
+    - play -> cache-manager 0.1
+
+repositories:
+    - playModules:
+         type:     chain
+         using:
+              - localrepo:
+                   type:       local
+                   descriptor: ${application.path}/../../[module]/conf/dependencies.yml
+                   artifact:   ${application.path}/../../[module]
+                   contains:
+                        - play -> *
+
+              - playLocalModules:
+                   type:       local
+                   descriptor: "${play.path}/modules/[module]-[revision]/conf/dependencies.yml"
+                   artifact:   "${play.path}/modules/[module]-[revision]"
+                   contains:
+                        - play -> *
