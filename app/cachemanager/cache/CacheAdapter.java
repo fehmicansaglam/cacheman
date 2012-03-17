@@ -15,30 +15,30 @@ public class CacheAdapter {
 
     public final String expire;
 
-    public CacheAdapter(Function<? extends Object, ? extends Serializable> function, String expire) {
+    public CacheAdapter(final Function<? extends Object, ? extends Serializable> function, final String expire) {
 
         this.function = function;
         this.method = null;
         this.expire = expire;
     }
 
-    public CacheAdapter(Class<? extends GenericModel> clazz, String method, String expire) {
+    public CacheAdapter(final Class<? extends GenericModel> clazz, final String method, final String expire) {
 
         try {
             this.method = clazz.getDeclaredMethod(method);
             this.function = null;
             this.expire = expire;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new UnexpectedException(e);
         }
     }
 
-    public <P extends Object, R extends Serializable> R get(P input) {
+    public <P extends Object, R extends Serializable> R get(final P input) {
 
         if (this.method != null) {
             try {
                 return (R) this.method.invoke(null);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 throw new UnexpectedException(e);
             }
         } else if (this.function != null) {

@@ -9,23 +9,51 @@ import cachemanager.cache.CacheKey.CacheScope;
 
 public final class CacheManager {
 
+    private static final String KEY_SEPERATOR = ":";
+
+    /**
+     * Do not instantiate this class. Only use the static methods provided.
+     */
     private CacheManager() {
 
     }
 
-    private static String constructKey(CacheKey cacheKey, Object id) {
+    /**
+     * Constructs the key for the given CacheKey. If id is null, constructed key
+     * is going to be simply the CacheKey.key(). If an id is provided then the
+     * key is going to be like "<key>:<id>". If the cache scope is session then
+     * session id is going to be appended to the key so that the key is going to
+     * be like "<key>:<id>:<session_id>".
+     * 
+     * @param cacheKey
+     * @param id
+     * @return
+     */
+    private static String constructKey(final CacheKey cacheKey, final Object id) {
 
         String key = cacheKey.key();
         if (id != null) {
-            key += "_" + id.toString();
+            key += KEY_SEPERATOR + id.toString();
         }
         if (CacheScope.SESSION.equals(cacheKey.scope())) {
-            key += "_" + Scope.Session.current().getId();
+            key += KEY_SEPERATOR + Scope.Session.current().getId();
         }
         return key;
     }
 
-    public static <P extends Object, R extends Serializable> R get(CacheKey cacheKey, P id) {
+    /**
+     * Retreives the value associated with the given key from the cache. If
+     * there is no such key present in the cache then null is returned.
+     * 
+     * @param <P>
+     *            Type of id
+     * @param <R>
+     *            Return type
+     * @param cacheKey
+     * @param id
+     * @return
+     */
+    public static <P extends Object, R extends Serializable> R get(final CacheKey cacheKey, final P id) {
 
         final String key = constructKey(cacheKey, id);
         R value = (R) Cache.get(key);
@@ -40,14 +68,30 @@ public final class CacheManager {
         return value;
     }
 
-    public static <R extends Serializable> R get(CacheKey cacheKey) {
+    /**
+     * Retreives the value associated with the given key from the cache. If
+     * there is no such key present in the cache then null is returned. This
+     * method is a shortcut for CacheManager.get(cacheKey, null)
+     * 
+     * @param <R>
+     *            Return type
+     * @param cacheKey
+     * @return
+     */
+    public static <R extends Serializable> R get(final CacheKey cacheKey) {
 
         return get(cacheKey, null);
     }
 
-    public static void delete(CacheKey cacheKey, Object id) {
+    /**
+     * Deletes the value associated with the given key from the cache.
+     * 
+     * @param cacheKey
+     * @param id
+     */
+    public static void delete(final CacheKey cacheKey, final Object id) {
 
-        String key = constructKey(cacheKey, id);
+        final String key = constructKey(cacheKey, id);
         Cache.delete(key);
         Logger.debug("%s removed from cache", key);
     }

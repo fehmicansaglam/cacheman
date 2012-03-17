@@ -27,7 +27,7 @@ public class CacheManagerTest extends UnitTest {
         long start = System.nanoTime();
         Long userCount = CacheManager.get(GlobalCacheKey.USER_COUNT);
         long end = System.nanoTime();
-        Logger.info("[staticMethodTest]: Cache miss in %d ns", end - start);
+        Logger.info("[staticMethodTest]: Cache miss in %dns", end - start);
         assertEquals(Long.valueOf(3), userCount);
 
         // Cache hit
@@ -44,7 +44,7 @@ public class CacheManagerTest extends UnitTest {
         final String testUsername = "testUser4";
         CacheManager.delete(GlobalCacheKey.USER, testUsername);
 
-        User testUser = new User(testUsername, "").save();
+        final User testUser = new User(testUsername, "").save();
 
         // Cache miss
         long start = System.nanoTime();

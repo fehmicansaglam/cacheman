@@ -7,7 +7,7 @@ public enum SampleCacheKey implements CacheKey {
     SAMPLE(new CacheAdapter(new Function<String, String>() {
 
         @Override
-        public String apply(String input) {
+        public String apply(final String input) {
 
             return input;
         }
@@ -15,7 +15,7 @@ public enum SampleCacheKey implements CacheKey {
 
     private CacheAdapter adapter;
 
-    private SampleCacheKey(CacheAdapter adapter) {
+    private SampleCacheKey(final CacheAdapter adapter) {
 
         this.adapter = adapter;
     }
@@ -35,6 +35,6 @@ public enum SampleCacheKey implements CacheKey {
     @Override
     public CacheAdapter adapter() {
 
-        return adapter;
+        return this.adapter;
     }
 }
