@@ -15,19 +15,26 @@ public class CacheAdapter {
 
     public final String expire;
 
-    public CacheAdapter(final Function<? extends Object, ? extends Serializable> function, final String expire) {
+    private final Class<?>[] parameterTypes;
+
+    public CacheAdapter(final Function<? extends Object, ? extends Serializable> function,
+            final String expire) {
 
         this.function = function;
         this.method = null;
         this.expire = expire;
+        this.parameterTypes = null;
     }
 
-    public CacheAdapter(final Class<? extends GenericModel> clazz, final String method, final String expire) {
+    public CacheAdapter(final Class<? extends GenericModel> clazz, final String method,
+            final String expire, final Class<?>... parameterTypes) {
 
         try {
-            this.method = clazz.getDeclaredMethod(method);
+            this.method = clazz.getDeclaredMethod(method, parameterTypes);
+            this.method.setAccessible(true);
             this.function = null;
             this.expire = expire;
+            this.parameterTypes = parameterTypes;
         } catch (final Exception e) {
             throw new UnexpectedException(e);
         }
@@ -37,7 +44,11 @@ public class CacheAdapter {
 
         if (this.method != null) {
             try {
-                return (R) this.method.invoke(null);
+                if (this.parameterTypes == null || this.parameterTypes.length == 0) {
+                    return (R) this.method.invoke(null);
+                } else {
+                    return (R) this.method.invoke(null, input);
+                }
             } catch (final Exception e) {
                 throw new UnexpectedException(e);
             }
@@ -47,4 +58,5 @@ public class CacheAdapter {
             throw new UnexpectedException("Don't know how to get the value");
         }
     }
+
 }

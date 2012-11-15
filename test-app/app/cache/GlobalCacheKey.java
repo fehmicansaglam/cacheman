@@ -7,18 +7,19 @@ import cachemanager.common.Function;
 
 public enum GlobalCacheKey implements CacheKey {
 
-    USER(new CacheAdapter(new Function<String, User>() {
+    USER_BY_ID(new CacheAdapter(User.class, "findById", null, Object.class)), USER(
+            new CacheAdapter(new Function<String, User>() {
 
-        @Override
-        public User apply(String username) {
+                @Override
+                public User apply(final String username) {
 
-            return User.findByUsername(username);
-        }
-    }, "8h")), USER_COUNT(new CacheAdapter(User.class, "count", "5mn"));
+                    return User.findByUsername(username);
+                }
+            }, "8h")), USER_COUNT(new CacheAdapter(User.class, "count", "5mn"));
 
     private CacheAdapter adapter;
 
-    private GlobalCacheKey(CacheAdapter adapter) {
+    private GlobalCacheKey(final CacheAdapter adapter) {
 
         this.adapter = adapter;
     }
@@ -38,6 +39,6 @@ public enum GlobalCacheKey implements CacheKey {
     @Override
     public CacheAdapter adapter() {
 
-        return adapter;
+        return this.adapter;
     }
 }

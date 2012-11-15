@@ -15,9 +15,3 @@ repositories:
                    contains:
                         - play -> *
 
-              - playLocalModules:
-                   type:       local
-                   descriptor: "${play.path}/modules/[module]-[revision]/conf/dependencies.yml"
-                   artifact:   "${play.path}/modules/[module]-[revision]"
-                   contains:
-                        - play -> *

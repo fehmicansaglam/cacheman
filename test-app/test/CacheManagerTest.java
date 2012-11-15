@@ -39,6 +39,27 @@ public class CacheManagerTest extends UnitTest {
     }
 
     @Test
+    public void staticMethodWithParameterTest() {
+
+        User user = new User("testUser1", "").save();
+        Long id = user.id;
+
+        // Cache miss
+        long start = System.nanoTime();
+        user = CacheManager.get(GlobalCacheKey.USER_BY_ID, id);
+        long end = System.nanoTime();
+        Logger.info("[staticMethodWithParameterTest]: Cache miss in %dns", end - start);
+        assertEquals(id, user.id);
+
+        // Cache hit
+        start = System.nanoTime();
+        user = CacheManager.get(GlobalCacheKey.USER_BY_ID, id);
+        end = System.nanoTime();
+        Logger.info("[staticMethodWithParameterTest]: Cache hit in %dns", end - start);
+        assertEquals(id, user.id);
+    }
+
+    @Test
     public void functionTest() {
 
         final String testUsername = "testUser4";
