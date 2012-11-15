@@ -60,6 +60,44 @@ public class CacheManagerTest extends UnitTest {
     }
 
     @Test
+    public void nameSpaceTest() {
+
+        User user1 = new User("testUser1", "").save();
+        User user2 = new User("testUser2", "").save();
+        Long id1 = user1.id;
+        Long id2 = user2.id;
+
+        // Cache miss
+        long start = System.nanoTime();
+        user1 = CacheManager.get(GlobalCacheKey.NS_USER_BY_ID, id1);
+        user2 = CacheManager.get(GlobalCacheKey.NS_USER_BY_ID, id2);
+        long end = System.nanoTime();
+        Logger.info("[nameSpaceTest]: Cache miss in %dns", end - start);
+        assertEquals(id1, user1.id);
+        assertEquals(id2, user2.id);
+
+        // Cache hit
+        start = System.nanoTime();
+        user1 = CacheManager.get(GlobalCacheKey.NS_USER_BY_ID, id1);
+        user2 = CacheManager.get(GlobalCacheKey.NS_USER_BY_ID, id2);
+        end = System.nanoTime();
+        Logger.info("[nameSpaceTest]: Cache hit in %dns", end - start);
+        assertEquals(id1, user1.id);
+        assertEquals(id2, user2.id);
+
+        CacheManager.invalidateNameSpace(GlobalCacheKey.NS_USER_BY_ID);
+
+        // Cache miss
+        start = System.nanoTime();
+        user1 = CacheManager.get(GlobalCacheKey.NS_USER_BY_ID, id1);
+        user2 = CacheManager.get(GlobalCacheKey.NS_USER_BY_ID, id2);
+        end = System.nanoTime();
+        Logger.info("[nameSpaceTest]: Cache miss in %dns", end - start);
+        assertEquals(id1, user1.id);
+        assertEquals(id2, user2.id);
+    }
+
+    @Test
     public void functionTest() {
 
         final String testUsername = "testUser4";

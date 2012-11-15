@@ -33,7 +33,7 @@ public enum SampleCacheKey implements CacheKey {
     }
 
     @Override
-    public CacheAdapter adapter() {
+    public CacheAdapter getAdapter() {
 
         return this.adapter;
     }

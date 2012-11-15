@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import play.Logger;
 import play.cache.Cache;
+import play.libs.Codec;
 import play.mvc.Scope;
 import cachemanager.cache.CacheKey.CacheScope;
 
@@ -30,15 +31,27 @@ public final class CacheManager {
      * @return
      */
     private static String constructKey(final CacheKey cacheKey, final Object id) {
-
-        String key = cacheKey.key();
+        final CacheAdapter adapter = cacheKey.getAdapter();
+        StringBuilder key = new StringBuilder();
+        if (adapter instanceof NameSpaceCacheAdapter) {
+            final String ns = ((NameSpaceCacheAdapter) adapter).nameSpace;
+            Long ts = Cache.get(ns, Long.class);
+            if (ts == null) {
+                ts = System.currentTimeMillis();
+                if (!Cache.safeAdd(ns, ts, null)) {
+                    ts = Cache.get(ns, Long.class);
+                }
+            }
+            key.append(ts).append(KEY_SEPERATOR);
+        }
+        key.append(cacheKey.key());
         if (id != null) {
-            key += KEY_SEPERATOR + id.toString();
+            key.append(KEY_SEPERATOR).append(Codec.hexSHA1(id.toString()).substring(0, 8));
         }
         if (CacheScope.SESSION.equals(cacheKey.scope())) {
-            key += KEY_SEPERATOR + Scope.Session.current().getId();
+            key.append(KEY_SEPERATOR).append(Scope.Session.current().getId());
         }
-        return key;
+        return key.toString();
     }
 
     /**
@@ -53,8 +66,8 @@ public final class CacheManager {
      * @param id
      * @return
      */
-    public static <P extends Object, R extends Serializable> R get(final CacheKey cacheKey, final P id) {
-
+    public static <P extends Object, R extends Serializable> R get(final CacheKey cacheKey,
+            final P id) {
         final String key = constructKey(cacheKey, id);
         R value = (R) Cache.get(key);
         if (value != null) {
@@ -62,7 +75,7 @@ public final class CacheManager {
             return value;
         }
         Logger.debug("Cache miss: %s", key);
-        final CacheAdapter adapter = cacheKey.adapter();
+        final CacheAdapter adapter = cacheKey.getAdapter();
         value = adapter.get(id);
         Cache.set(key, value, adapter.expire);
         return value;
@@ -79,7 +92,6 @@ public final class CacheManager {
      * @return
      */
     public static <R extends Serializable> R get(final CacheKey cacheKey) {
-
         return get(cacheKey, null);
     }
 
@@ -90,9 +102,17 @@ public final class CacheManager {
      * @param id
      */
     public static void delete(final CacheKey cacheKey, final Object id) {
-
         final String key = constructKey(cacheKey, id);
         Cache.delete(key);
         Logger.debug("%s removed from cache", key);
+    }
+
+    public static void invalidateNameSpace(final CacheKey cacheKey) {
+        final CacheAdapter adapter = cacheKey.getAdapter();
+        if (adapter instanceof NameSpaceCacheAdapter) {
+            final String ns = ((NameSpaceCacheAdapter) adapter).nameSpace;
+            Cache.incr(ns);
+            Logger.debug("Invalidated namespace %s", ns);
+        }
     }
 }

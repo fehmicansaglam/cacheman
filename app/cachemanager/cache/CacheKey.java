@@ -10,5 +10,5 @@ public interface CacheKey {
 
     public String key();
 
-    public CacheAdapter adapter();
+    public CacheAdapter getAdapter();
 }
